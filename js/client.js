@@ -1,5 +1,5 @@
 const Client = {};
-Client.socket = io.connect('http://localhost:3001/');
+Client.socket = io.connect('http://localhost:8082/');
 
 Client.sendTest = () => {
   console.log('test sent');
@@ -7,7 +7,7 @@ Client.sendTest = () => {
 };
 
 Client.socket.on('test', () => {
-  console.log('test received');
+  console.log('test received on client');
 });
 
 export default Client;

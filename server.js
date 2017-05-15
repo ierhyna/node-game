@@ -14,3 +14,10 @@ app.get('/', (req, res) => {
 server.listen(8082, () => {
   console.log('Listening on ' + server.address().port);
 });
+
+io.on('connection', socket => {
+  socket.on('test', () => {
+    console.log('test received on server');
+    io.emit('test');
+  });
+});
