@@ -6,8 +6,8 @@ Client.sendTest = () => {
   Client.socket.emit('test');
 };
 
-Client.socket.on('test', () => {
-  console.log('test received on client');
+Client.socket.on('id', (id) => {
+  console.log('Welcome, player ' + id);
 });
 
 export default Client;
