@@ -79,6 +79,8 @@ if (TARGET === 'build') {
     },
     plugins: [
       new BrowserSyncPlugin({
+        host: process.env.IP || 'localhost',
+        port: process.env.PORT || 3001,
         proxy: 'localhost:8082',
       })
     ]
