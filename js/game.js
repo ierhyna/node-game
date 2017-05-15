@@ -9,6 +9,13 @@ game.state.start('Game');
 
 const Game = {};
 
-Client.sendTest();
+Game.init = () => {
+  game.stage.disableVisibilityChange = true;
+};
+
+Game.create = () => {
+  game.physics.enable(player, Phaser.Physics.ARCADE);
+  Client.sendTest();
+};
 
 export default Game;
