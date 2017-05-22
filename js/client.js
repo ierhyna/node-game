@@ -12,4 +12,10 @@ Client.socket.on('newPlayerConnected', (player) => {
   Game.renderNewPlayer(player.id, player.x, player.y);
 });
 
+Client.socket.on('playersRerender', (players) => {
+    players.forEach(player => {
+        Game.renderNewPlayer(player.id, player.x, player.y);
+    });
+});
+
 export default Client;

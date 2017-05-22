@@ -3,6 +3,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 let player = {};
+let players = [];
 
 app.use('/css', express.static(__dirname + '/css'));
 app.use('/dist', express.static(__dirname + '/dist'));
@@ -25,6 +26,9 @@ io.on('connection', socket => {
   socket.on('newPlayer', () => {
     console.log('Creating player session ' + player.id);
     io.emit('newPlayerConnected', player);
+
+    players.push(player);
+    io.emit('playersRerender', players);
   });
 });
 
