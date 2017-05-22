@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
+let player = {};
 
 app.use('/css', express.static(__dirname + '/css'));
 app.use('/dist', express.static(__dirname + '/dist'));
@@ -14,9 +15,9 @@ app.get('/', (req, res) => {
 server.listen(8082, () => {
   console.log('Listening on ' + server.address().port);
 });
-let player ={};
+
 io.on('connection', socket => {
-    player.id = generateRandomId();
+  player.id = generateRandomId();
   socket.on('test', () => {
     console.log('test received on server');
     console.log("Creating player session " + player.id);
