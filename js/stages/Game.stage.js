@@ -10,7 +10,7 @@ export const Game = {
         Client.addPlayer();
     },
     update: function() {},
-    addNewPlayer: function (id, x, y) {
-        game.playerMap[id] = game.add.sprite(x, y, 'sprite');
+    renderNewPlayer: function (id, x, y) {
+      Game.playerMap[id] = game.add.sprite(x, y, 'sprite');
    }
 };
