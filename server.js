@@ -17,10 +17,14 @@ server.listen(8082, () => {
 });
 
 io.on('connection', socket => {
-  player.id = generateRandomId();
+  player = {
+    id: generateRandomId(),
+    x: randomInt(50, 200),
+    y: randomInt(50, 200),
+  };
   socket.on('newPlayer', () => {
     console.log('Creating player session ' + player.id);
-    io.emit('newPlayerConnected', player.id);
+    io.emit('newPlayerConnected', player);
   });
 });
 
@@ -30,4 +34,8 @@ function generateRandomId(){
 
 function hashBuild() {
     return String(Math.random()).slice(2,6);
+}
+
+function randomInt (low, high) {
+    return Math.floor(Math.random() * (high - low) + low);
 }

@@ -7,10 +7,9 @@ Client.addPlayer = () => {
   Client.socket.emit('newPlayer');
 };
 
-Client.socket.on('newPlayerConnected', (id) => {
-  console.log(`Player ${id} connected`);
-  console.log(Game)
-  Game.renderNewPlayer(id, 50, 50);
+Client.socket.on('newPlayerConnected', (player) => {
+  console.log(`Player ${player.id} connected`);
+  Game.renderNewPlayer(player.id, player.x, player.y);
 });
 
 export default Client;
