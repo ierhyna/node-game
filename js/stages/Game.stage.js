@@ -6,8 +6,11 @@ export const Game = {
     create: function() {
         game.stage.disableVisibilityChange = true;
         //game.physics.enable(player, Phaser.Physics.ARCADE);
-        Client.sendTest();
-        console.log("ran");
+        Game.playerMap = {};
+        Client.addPlayer();
     },
-    update: function() {}
+    update: function() {},
+    addNewPlayer: function (id, x, y) {
+        game.playerMap[id] = game.add.sprite(x, y, 'sprite');
+   }
 };

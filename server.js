@@ -18,10 +18,9 @@ server.listen(8082, () => {
 
 io.on('connection', socket => {
   player.id = generateRandomId();
-  socket.on('test', () => {
-    console.log('test received on server');
-    console.log("Creating player session " + player.id);
-    io.emit("id", player.id);
+  socket.on('newPlayer', () => {
+    console.log('Creating player session ' + player.id);
+    io.emit('newPlayerConnected', player.id);
   });
 });
 
