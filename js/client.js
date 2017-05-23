@@ -13,9 +13,13 @@ Client.socket.on('newPlayerConnected', (player) => {
 });
 
 Client.socket.on('playersRerender', (players) => {
-    players.forEach(player => {
-        Game.renderNewPlayer(player.id, player.x, player.y);
-    });
+  players.forEach(player => {
+    Game.renderNewPlayer(player.id, player.x, player.y);
+  });
+});
+
+Client.socket.on('remove', (id) => {
+  Game.removePlayer(id);
 });
 
 export default Client;

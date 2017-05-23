@@ -2,8 +2,6 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
-let player = {};
-let players = [];
 
 app.use('/css', express.static(__dirname + '/css'));
 app.use('/dist', express.static(__dirname + '/dist'));
@@ -18,17 +16,19 @@ server.listen(8082, () => {
 });
 
 io.on('connection', socket => {
-  player = {
-    id: generateRandomId(),
-    x: randomInt(50, 200),
-    y: randomInt(50, 200),
-  };
   socket.on('newPlayer', () => {
-    console.log('Creating player session ' + player.id);
-    io.emit('newPlayerConnected', player);
+    socket.player = {
+      id: generateRandomId(),
+      x: randomInt(50, 200),
+      y: randomInt(50, 200),
+    };
 
-    players.push(player);
-    io.emit('playersRerender', players);
+    socket.emit('playersRerender', getAllPlayers());
+    socket.broadcast.emit('newPlayerConnected', socket.player);
+
+    socket.on('disconnect', () => {
+      io.emit('remove', socket.player.id);
+    });
   });
 });
 
@@ -42,4 +42,14 @@ function hashBuild() {
 
 function randomInt (low, high) {
     return Math.floor(Math.random() * (high - low) + low);
+}
+
+function getAllPlayers() {
+    const players = [];
+    Object.keys(io.sockets.connected).forEach((socketID) => {
+        const player = io.sockets.connected[socketID].player;
+        if (player) players.push(player);
+    });
+    console.log(players)
+    return players;
 }
