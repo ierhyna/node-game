@@ -5,7 +5,7 @@ import Client from "./client.js";
 import { Game } from "./stages";
 
 const game = new Phaser.Game(
-    16 * 32,
+    480,
     600,
     Phaser.AUTO,
     document.getElementById("game")
