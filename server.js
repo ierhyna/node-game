@@ -30,6 +30,10 @@ io.on('connection', socket => {
       io.emit('remove', socket.player.id);
     });
   });
+
+  socket.on('rand', ()=> {
+      io.emit('randServer', {id: socket.player.id, x: randomInt(50, 200), y: randomInt(50,200)});
+  })
 });
 
 function generateRandomId(){
