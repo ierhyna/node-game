@@ -22,4 +22,11 @@ Client.socket.on('remove', (id) => {
   Game.removePlayer(id);
 });
 
+Client.socket.on('randServer', data => Game.setRandom(data))
+
+Client.randomizePosition =() => {
+    console.log('randomizing')
+    Client.socket.emit('rand');
+}
+
 export default Client;
