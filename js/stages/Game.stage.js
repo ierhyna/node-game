@@ -34,16 +34,18 @@ export const Game = {
             velocity.x = 4;
         }
         (velocity.x || velocity.y) &&
-        Client.move({
-            x: velocity.x,
-            y: velocity.y
-        });
+            Client.move({
+                x: velocity.x,
+                y: velocity.y
+            });
     },
     renderNewPlayer: function(id, x, y) {
         Game.playerMap[id] = game.add.sprite(x, y, "sprite");
         Game.playerMap[id].scale.setTo(0.5, 0.5);
         game.physics.arcade.enable(Game.playerMap[id]);
         Game.playerMap[id].body.collideWorldBounds = true;
+        // game.physics.arcade.gravity.y = 200;
+        // Game.playerMap[id].body.bounce.y = 0.95;
     },
     removePlayer: function(id) {
         Game.playerMap[id].destroy();
