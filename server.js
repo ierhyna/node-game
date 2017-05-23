@@ -31,8 +31,9 @@ io.on('connection', socket => {
     });
   });
 
-  socket.on('rand', ()=> {
-      io.emit('randServer', {id: socket.player.id, x: randomInt(50, 200), y: randomInt(50,200)});
+  socket.on('sendMove', (data)=> {
+      console.log('server got ', data)
+      io.emit('receiveMove', {id: socket.player.id, x: data.x, y: data.y});
   })
 });
 

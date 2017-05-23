@@ -13,7 +13,16 @@ export const Game = {
     },
     update: function() {
         if (cursors.up.isDown) {
-            Client.randomizePosition();
+            Client.move({x:0, y:4});
+        }
+        if (cursors.down.isDown) {
+            Client.move({x:0, y:-4});
+        }
+        if (cursors.left.isDown) {
+            Client.move({x:-4, y:0});
+        }
+        if (cursors.right.isDown) {
+            Client.move({x:4, y:0});
         }
     },
     renderNewPlayer: function(id, x, y) {
@@ -23,9 +32,9 @@ export const Game = {
         Game.playerMap[id].destroy();
         delete Game.playerMap[id];
     },
-    setRandom: function(data) {
-        console.log('attempt to move ', data.id)
-        Game.playerMap[data.id].x = data.x;
-        Game.playerMap[data.id].y = data.y;
+    move: function(data) {
+        console.log('attempt to move ', data.id);
+        Game.playerMap[data.id].y += data.y;
+        Game.playerMap[data.id].x += data.x;
     }
 };
