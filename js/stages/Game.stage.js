@@ -2,6 +2,10 @@ import game from "../game";
 import Client from "../client";
 
 let cursors;
+let velocity = {
+    x: 0,
+    y: 0
+}
 
 export const Game = {
     preload: function() {},
@@ -12,18 +16,25 @@ export const Game = {
         cursors = game.input.keyboard.createCursorKeys();
     },
     update: function() {
+        velocity.x = 0;
+        velocity.y = 0;
+
         if (cursors.up.isDown) {
-            Client.move({x:0, y:4});
+            velocity.y = -4;
         }
         if (cursors.down.isDown) {
-            Client.move({x:0, y:-4});
+            velocity.y = 4;
         }
         if (cursors.left.isDown) {
-            Client.move({x:-4, y:0});
+            velocity.x = -4;
         }
         if (cursors.right.isDown) {
-            Client.move({x:4, y:0});
+            velocity.x = 4;
         }
+        (velocity.x || velocity.y) && Client.move({
+            x: velocity.x,
+            y: velocity.y
+        })
     },
     renderNewPlayer: function(id, x, y) {
         Game.playerMap[id] = game.add.sprite(x, y, 'sprite');
