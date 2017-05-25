@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
+const PORT = process.env.PORT || 8082;
 
 app.use('/css', express.static(__dirname + '/css'));
 app.use('/dist', express.static(__dirname + '/dist'));
@@ -11,7 +12,7 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-server.listen(8082, () => {
+server.listen(PORT, () => {
   console.log('Listening on ' + server.address().port);
 });
 
