@@ -7,8 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "node server.js",
     "client": "webpack",
-    "build": "webpack",
-    "start": "npm run build && PORT=8082 npm run server"
+    "build": "webpack -p --config ./webpack.config.js --progress",
+    "start": "PORT=8082 npm run server",
+    "heroku-postbuild": "npm run build"
   },
   "author": "",
   "license": "MIT",
