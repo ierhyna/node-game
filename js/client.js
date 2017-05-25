@@ -1,7 +1,7 @@
 import { Game } from "./stages/Game.stage";
 
 const Client = {};
-Client.socket = io.connect("http://localhost:8082/");
+Client.socket = io.connect("http://localhost:3000/");
 
 Client.addPlayer = () => {
     Client.socket.emit("newPlayer");
