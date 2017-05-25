@@ -8,7 +8,7 @@
     "server": "node server.js",
     "client": "webpack",
     "build": "webpack",
-    "start": "npm run build && npm run server"
+    "start": "npm run build && PORT=8082 npm run server"
   },
   "author": "",
   "license": "MIT",
