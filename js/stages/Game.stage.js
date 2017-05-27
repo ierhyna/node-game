@@ -6,14 +6,21 @@ let velocity = {
     x: 0,
     y: 0
 };
+let tileMap, bgLayer;
 
 export const Game = {
     preload: function() {
+        game.load.tilemap('room', "assets/maps/tiles.json");
+        game.load.image('tileset', "assets/maps/tilea2.png");
         game.load.image("sprite", "assets/sprites/invader.jpg");
     },
     create: function() {
         game.stage.disableVisibilityChange = true;
         Game.playerMap = {};
+        tileMap = game.add.tilemap("room");
+        tileMap.addTilesetImage("tilea2", 'tileset');
+        bgLayer = tileMap.createLayer("layer_0");
+
         Client.addPlayer();
         cursors = game.input.keyboard.createCursorKeys();
     },
