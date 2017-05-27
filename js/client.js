@@ -23,12 +23,10 @@ Client.socket.on("remove", id => {
 });
 
 Client.socket.on("receiveMove", data => {
-    console.log("client got ", data);
     Game.move(data);
 });
 
 Client.move = data => {
-    console.log("randomizing");
     Client.socket.emit("sendMove", data);
 };
 
