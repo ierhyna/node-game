@@ -81,7 +81,7 @@ if (TARGET === 'build') {
       new BrowserSyncPlugin({
         host: process.env.IP || 'localhost',
         port: process.env.PORT || 3001,
-        proxy: 'localhost:8082',
+        proxy: 'localhost:3000',
       })
     ]
   });
