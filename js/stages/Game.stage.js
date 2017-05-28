@@ -9,11 +9,22 @@ let velocity = {
 
 export const Game = {
     preload: function() {
-        game.load.image("sprite", "assets/sprites/invader.jpg");
+        game.load.tilemap(
+            "room",
+            "assets/maps/tiles.json",
+            null,
+            Phaser.Tilemap.TILED_JSON
+        );
+        game.load.image("tileset", "assets/maps/tilea2.png");
+        game.load.image("sprite", "assets/sprites/char.gif");
     },
     create: function() {
         game.stage.disableVisibilityChange = true;
         Game.playerMap = {};
+        Game.tileMap = game.add.tilemap("room");
+        Game.tileMap.addTilesetImage("tilea2", "tileset");
+        Game.bgLayer = Game.tileMap.createLayer("layer_0");
+
         Client.addPlayer();
         cursors = game.input.keyboard.createCursorKeys();
     },
@@ -41,18 +52,15 @@ export const Game = {
     },
     renderNewPlayer: function(id, x, y) {
         Game.playerMap[id] = game.add.sprite(x, y, "sprite");
-        Game.playerMap[id].scale.setTo(0.5, 0.5);
+        Game.playerMap[id].scale.setTo(0.25, 0.25);
         game.physics.arcade.enable(Game.playerMap[id]);
         Game.playerMap[id].body.collideWorldBounds = true;
-        // game.physics.arcade.gravity.y = 200;
-        // Game.playerMap[id].body.bounce.y = 0.95;
     },
     removePlayer: function(id) {
         Game.playerMap[id].destroy();
         delete Game.playerMap[id];
     },
     move: function(data) {
-        console.log("attempt to move ", data.id);
         Game.playerMap[data.id].y += data.y;
         Game.playerMap[data.id].x += data.x;
     }
