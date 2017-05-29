@@ -77,5 +77,9 @@ export const Game = {
     move: function (data) {
         Game.playerMap[data.id].body.y += data.y;
         Game.playerMap[data.id].body.x += data.x;
-    }
+    },
+    setId: (id) => {
+      playerId = id;
+      console.log(id)
+    },
 };

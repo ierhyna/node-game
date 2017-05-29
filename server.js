@@ -35,8 +35,10 @@ io.on("connection", socket => {
     socket.on("sendMove", data => {
         io.emit("receiveMove", { id: socket.player.id, x: data.x, y: data.y });
     });
-        socket.on("updatePositions", data => {
-        io.emit("renderMove", { id: data.id, x: data.x, y: data.y });
+
+    socket.on("updatePositions", data => {
+        console.log(socket.player.id)
+        io.emit("renderMove", { id: socket.player.id, x: data.x, y: data.y });
     });
 });
 

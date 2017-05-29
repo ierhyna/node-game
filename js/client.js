@@ -22,6 +22,8 @@ Client.socket.on("remove", id => {
 });
 
 Client.socket.on("renderMove", data => {
+    console.log(data)
+    Game.setId(data.id);
     Game.move(data);
 });
 
