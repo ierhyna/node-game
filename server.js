@@ -8,13 +8,9 @@ app.use("/css", express.static(__dirname + "/css"));
 app.use("/dist", express.static(__dirname + "/dist"));
 app.use("/assets", express.static(__dirname + "/assets"));
 
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/index.html");
-});
+app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"));
 
-server.listen(PORT, () => {
-    console.log("Listening on " + server.address().port);
-});
+server.listen(PORT, () => console.log("Listening on " + server.address().port));
 
 io.on("connection", socket => {
     socket.on("newPlayer", () => {
@@ -26,31 +22,25 @@ io.on("connection", socket => {
 
         socket.emit("playersRerender", getAllPlayers());
         socket.broadcast.emit("newPlayerConnected", socket.player);
-
-        socket.on("disconnect", () => {
-            io.emit("remove", socket.player.id);
-        });
+        socket.on("disconnect", () => io.emit("remove", socket.player.id));
     });
 
     socket.on("updatePositions", data => {
-        io.emit("renderMove", { id: data.id, x: data.x, y: data.y });
+        socket.player.x = data.x;
+        socket.player.y = data.y;
+        io.emit("renderMove", {
+            id: data.id,
+            x: data.x,
+            y: data.y
+        });
     });
 });
-
-function hashBuild() {
-    return String(Math.random()).slice(2, 6);
-}
-
-function randomInt(low, high) {
-    return Math.floor(Math.random() * (high - low) + low);
-}
 
 function getAllPlayers() {
     const players = [];
     Object.keys(io.sockets.connected).forEach(socketID => {
         const player = io.sockets.connected[socketID].player;
-        if (player) players.push(player);
+        player && players.push(player);
     });
-    console.log(players);
     return players;
 }
