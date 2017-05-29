@@ -1,7 +1,6 @@
 import game from "../game";
 import Client from "../client";
 
-let playerId;
 let cursors;
 let previousPosition = {};
 let velocity = {
@@ -37,7 +36,6 @@ export const Game = {
 
         if (cursors.up.isDown) {
             velocity.y = -120;
-            console.log(playerId);
         }
         if (cursors.down.isDown) {
             velocity.y = 120;
@@ -48,16 +46,16 @@ export const Game = {
         if (cursors.right.isDown) {
             velocity.x = 120;
         }
-        if (Game.playerMap[playerId]){
-        Game.playerMap[playerId].body.velocity.x = velocity.x;
-        Game.playerMap[playerId].body.velocity.y = velocity.y;
+        if (Game.playerMap[Client.socket.id]){
+            Game.playerMap[Client.socket.id].body.velocity.x = velocity.x;
+            Game.playerMap[Client.socket.id].body.velocity.y = velocity.y;
         }
 
         if (velocity.x || velocity.y) {
             Client.updatePositions({
-                id: playerId,
-                x: Game.playerMap[playerId].body.x,
-                y: Game.playerMap[playerId].body.y
+                id: Client.socket.id,
+                x: Game.playerMap[Client.socket.id].body.x,
+                y: Game.playerMap[Client.socket.id].body.y
             })
         }
 
@@ -68,18 +66,14 @@ export const Game = {
         game.physics.arcade.enable(Game.playerMap[id]);
         Game.playerMap[id].body.enable=true;
         Game.playerMap[id].body.collideWorldBounds = true;
-        playerId = id;
     },
     removePlayer: function (id) {
         Game.playerMap[id].destroy();
         delete Game.playerMap[id];
     },
     move: function (data) {
+      console.log(data)
         Game.playerMap[data.id].body.y += data.y;
         Game.playerMap[data.id].body.x += data.x;
-    },
-    setId: (id) => {
-      playerId = id;
-      console.log(id)
-    },
+    }
 };

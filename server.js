@@ -19,7 +19,7 @@ server.listen(PORT, () => {
 io.on("connection", socket => {
     socket.on("newPlayer", () => {
         socket.player = {
-            id: generateRandomId(),
+            id: socket.id,
             x: 128,
             y: 128
         };
@@ -37,14 +37,9 @@ io.on("connection", socket => {
     });
 
     socket.on("updatePositions", data => {
-        console.log(socket.player.id)
         io.emit("renderMove", { id: socket.player.id, x: data.x, y: data.y });
     });
 });
-
-function generateRandomId() {
-    return `${hashBuild()}-${hashBuild()}-${hashBuild()}-${hashBuild()}`;
-}
 
 function hashBuild() {
     return String(Math.random()).slice(2, 6);
