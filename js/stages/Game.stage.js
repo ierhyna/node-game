@@ -3,7 +3,7 @@ import Client from "../client";
 
 let cursors;
 let previousPosition = {};
-let velocity = {
+let position = {
     x: 0,
     y: 0
 };
@@ -30,41 +30,37 @@ export const Game = {
         cursors = game.input.keyboard.createCursorKeys();
     },
     update: function () {
-        velocity.x = 0;
-        velocity.y = 0;
+        position.x = 0;
+        position.y = 0;
 
 
         if (cursors.up.isDown) {
-            velocity.y = -120;
+            position.y = -4;
         }
         if (cursors.down.isDown) {
-            velocity.y = 120;
+            position.y = 4;
         }
         if (cursors.left.isDown) {
-            velocity.x = -120;
+            position.x = -4;
         }
         if (cursors.right.isDown) {
-            velocity.x = 120;
-        }
-        if (Game.playerMap[Client.socket.id]){
-            Game.playerMap[Client.socket.id].body.velocity.x = velocity.x;
-            Game.playerMap[Client.socket.id].body.velocity.y = velocity.y;
+            position.x = 4;
         }
 
-        if (velocity.x || velocity.y) {
-            Client.updatePositions({
-                id: Client.socket.id,
-                x: Game.playerMap[Client.socket.id].body.x,
-                y: Game.playerMap[Client.socket.id].body.y
-            })
-        }
+
+        Client.updatePositions({
+            id: Client.socket.id,
+            x: position.x,
+            y: position.y
+        })
+
 
     },
     renderNewPlayer: function (id, x, y) {
         Game.playerMap[id] = game.add.sprite(x, y, "sprite");
         Game.playerMap[id].scale.setTo(0.25, 0.25);
         game.physics.arcade.enable(Game.playerMap[id]);
-        Game.playerMap[id].body.enable=true;
+        Game.playerMap[id].body.enable = true;
         Game.playerMap[id].body.collideWorldBounds = true;
     },
     removePlayer: function (id) {
@@ -72,8 +68,8 @@ export const Game = {
         delete Game.playerMap[id];
     },
     move: function (data) {
-      console.log(data)
-        Game.playerMap[data.id].body.y += data.y;
-        Game.playerMap[data.id].body.x += data.x;
+        console.log(data)
+        Game.playerMap[data.id].y += data.y;
+        Game.playerMap[data.id].x += data.x;
     }
 };
