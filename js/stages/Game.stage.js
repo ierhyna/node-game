@@ -33,7 +33,6 @@ export const Game = {
         position.x = 0;
         position.y = 0;
 
-
         if (cursors.up.isDown) {
             position.y = -4;
         }
@@ -47,14 +46,15 @@ export const Game = {
             position.x = 4;
         }
 
-
-        Client.updatePositions({
-            id: Client.socket.id,
-            x: position.x,
-            y: position.y
-        })
-
-
+        if (Game.playerMap[Client.socket.id]) {
+            Game.playerMap[Client.socket.id].x += position.x;
+            Game.playerMap[Client.socket.id].y += position.y;
+            Client.updatePositions({
+                id: Client.socket.id,
+                x: Game.playerMap[Client.socket.id].x,
+                y: Game.playerMap[Client.socket.id].y
+            })
+        }
     },
     renderNewPlayer: function (id, x, y) {
         Game.playerMap[id] = game.add.sprite(x, y, "sprite");
@@ -68,8 +68,7 @@ export const Game = {
         delete Game.playerMap[id];
     },
     move: function (data) {
-        console.log(data)
-        Game.playerMap[data.id].y += data.y;
-        Game.playerMap[data.id].x += data.x;
+        Game.playerMap[data.id].y = data.y;
+        Game.playerMap[data.id].x = data.x;
     }
 };
