@@ -8,7 +8,6 @@ Client.addPlayer = () => {
 };
 
 Client.socket.on("newPlayerConnected", player => {
-    console.log(`Player ${player.id} connected`);
     Game.renderNewPlayer(player.id, player.x, player.y);
 });
 

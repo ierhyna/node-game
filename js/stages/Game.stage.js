@@ -1,6 +1,7 @@
 import game from "../game";
 import Client from "../client";
 
+let playerId;
 let cursors;
 let velocity = {
     x: 0,
@@ -34,6 +35,7 @@ export const Game = {
 
         if (cursors.up.isDown) {
             velocity.y = -4;
+            console.log(playerId);
         }
         if (cursors.down.isDown) {
             velocity.y = 4;
@@ -55,6 +57,7 @@ export const Game = {
         Game.playerMap[id].scale.setTo(0.25, 0.25);
         game.physics.arcade.enable(Game.playerMap[id]);
         Game.playerMap[id].body.collideWorldBounds = true;
+        playerId = id;
     },
     removePlayer: function(id) {
         Game.playerMap[id].destroy();
