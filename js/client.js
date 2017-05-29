@@ -21,12 +21,14 @@ Client.socket.on("remove", id => {
     Game.removePlayer(id);
 });
 
-Client.socket.on("receiveMove", data => {
+Client.socket.on("renderMove", data => {
     Game.move(data);
 });
 
-Client.move = data => {
-    Client.socket.emit("sendMove", data);
-};
+
+Client.updatePositions = data => {
+    Client.socket.emit("updatePositions", data);
+}
+
 
 export default Client;
