@@ -2,8 +2,7 @@ import game from "../game";
 import Client from "../client";
 
 let cursors;
-let previousPosition = {};
-let position = {
+let velocity = {
     x: 0,
     y: 0
 };
@@ -30,31 +29,34 @@ export const Game = {
         cursors = game.input.keyboard.createCursorKeys();
     },
     update: function () {
-        position.x = 0;
-        position.y = 0;
+        console.log(Game.playerMap[Client.socket.id])
+        if (!Game.playerMap[Client.socket.id]) return;
+        velocity.x = 0;
+        velocity.y = 0;
 
         if (cursors.up.isDown) {
-            position.y = -4;
+            velocity.y = -120;
         }
         if (cursors.down.isDown) {
-            position.y = 4;
+            velocity.y = 120;
         }
         if (cursors.left.isDown) {
-            position.x = -4;
+            velocity.x = -120;
         }
         if (cursors.right.isDown) {
-            position.x = 4;
+            velocity.x = 120;
         }
 
         if (Game.playerMap[Client.socket.id]) {
-            Game.playerMap[Client.socket.id].x += position.x;
-            Game.playerMap[Client.socket.id].y += position.y;
-            Client.updatePositions({
-                id: Client.socket.id,
-                x: Game.playerMap[Client.socket.id].x,
-                y: Game.playerMap[Client.socket.id].y
-            })
+            Game.playerMap[Client.socket.id].body.velocity.x = velocity.x;
+            Game.playerMap[Client.socket.id].body.velocity.y = velocity.y;
+
         }
+        Client.updatePositions({
+            id: Client.socket.id,
+            x: Game.playerMap[Client.socket.id].body.position.x,
+            y: Game.playerMap[Client.socket.id].body.position.y
+        })
     },
     renderNewPlayer: function (id, x, y) {
         Game.playerMap[id] = game.add.sprite(x, y, "sprite");
