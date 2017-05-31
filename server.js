@@ -16,6 +16,7 @@ const routeLogin = require("./routes/login");
 const routeLogout = require("./routes/logout");
 
 const Users = require('./models/userModel');
+let name;
 
 mongoose.Promise = global.Promise;
 mongoose.connect(MONGODB_URI);
@@ -31,7 +32,9 @@ app.use("/css", express.static(__dirname + "/css"));
 app.use("/dist", express.static(__dirname + "/dist"));
 app.use("/assets", express.static(__dirname + "/assets"));
 
-app.get("/", isLogged, (req, res) => res.sendFile(__dirname + "/index.html"));
+app.get("/", isLogged, (req, res) => {
+    name = req.session.username;
+    res.sendFile(__dirname + "/index.html")});
 
 app.use("/register", routeRegister);
 app.use("/login", routeLogin);
@@ -45,7 +48,8 @@ io.on("connection", socket => {
         socket.player = {
             id: socket.id,
             x: 128,
-            y: 128
+            y: 128,
+            name
         };
 
         socket.emit("playersRerender", getAllPlayers());
