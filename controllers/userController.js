@@ -32,7 +32,7 @@ exports.login = (req, res) => {
     });
   }
 
-  Users.findOne({ email: req.body.email }, (err, currentUser) => {
+  Users.findOne({ username: req.body.username }, (err, currentUser) => {
     if (err) {
       res.send(err);
     }
