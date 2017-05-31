@@ -3,7 +3,7 @@ const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 const mongoose = require("mongoose");
-const MONGODB_URI = require("./db.local");
+const MONGODB_URI = process.env.MONGODB_URI || require("./db.local");
 const PORT = process.env.PORT || 3000;
 
 mongoose.Promise = global.Promise;
