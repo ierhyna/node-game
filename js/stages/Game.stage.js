@@ -2,6 +2,7 @@ import game from "../game";
 import Client from "../client";
 
 let cursors;
+let throttle = 0;
 let nameTag;
 let velocity = {
     x: 0,
@@ -33,8 +34,6 @@ export const Game = {
 
     update: function () {
         if (!Game.playerMap[Client.socket.id]) return;
-        nameTag.x = Game.playerMap[Client.socket.id].x + Game.playerMap[Client.socket.id].width / 2;
-        nameTag.y = Game.playerMap[Client.socket.id].y - 14;
         velocity.x = 0;
         velocity.y = 0;
 
@@ -55,12 +54,17 @@ export const Game = {
             Game.playerMap[Client.socket.id].body.velocity.y = velocity.y;
         }
 
-        Client.updatePositions({
-            id: Client.socket.id,
-            x: Game.playerMap[Client.socket.id].body.position.x,
-            y: Game.playerMap[Client.socket.id].body.position.y
-        })
+        throttle++;
+        if (throttle === 3) {
+            Client.updatePositions({
+                id: Client.socket.id,
+                x: Game.playerMap[Client.socket.id].body.position.x,
+                y: Game.playerMap[Client.socket.id].body.position.y
+            })
+            throttle = 0;
+        }
     },
+
     renderNewPlayer: function (id, x, y) {
         Game.playerMap[id] = game.add.sprite(x, y, "sprite");
         const _p = Game.playerMap[id];
@@ -68,24 +72,31 @@ export const Game = {
         game.physics.arcade.enable(_p);
         _p.body.enable = true;
         _p.body.collideWorldBounds = true;
-        if (!nameTag) {
+        if (!_p.nameTag) {
             // we create name Tag only if it does not exist yet;
-            nameTag = game.add.text(0, 0, (Client.socket.id).slice(0, 10), {
+            _p.nameTag = game.add.text(0, 0, (id).slice(0, 10), {
                 font: "14px Arial",
                 fill: "#fff",
                 align: "center"
             });
-            nameTag.anchor.setTo(0.5, 0.5);
+            _p.nameTag.anchor.setTo(0.5, 0.5);
+            console.log("added name tag " + id.slice(0, 10))
         }
     },
 
     removePlayer: function (id) {
+        Game.playerMap[id].nameTag.destroy(); // nameTag should be destroyed on its own
         Game.playerMap[id].destroy();
         delete Game.playerMap[id];
     },
-    
+
     move: function (data) {
         Game.playerMap[data.id].y = data.y;
         Game.playerMap[data.id].x = data.x;
+        data.playerList.forEach(id => {
+            Game.playerMap[id].nameTag.x = Game.playerMap[id].x + Game.playerMap[id].width / 2;
+            Game.playerMap[id].nameTag.y = Game.playerMap[id].y - 14;
+        })
+
     }
 };
