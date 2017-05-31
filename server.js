@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const bodyParser = require('body-parser');
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 const mongoose = require("mongoose");
@@ -19,6 +20,7 @@ mongoose.connection.once('open', () => {
     console.info('Got DB connection');
 });
 
+app.use(bodyParser.urlencoded({extended: false}));
 app.use("/css", express.static(__dirname + "/css"));
 app.use("/dist", express.static(__dirname + "/dist"));
 app.use("/assets", express.static(__dirname + "/assets"));
