@@ -65,7 +65,7 @@ export const Game = {
         }
     },
 
-    renderNewPlayer: function (id, x, y) {
+    renderNewPlayer: function (id, x, y, name) {
         Game.playerMap[id] = game.add.sprite(x, y, "sprite");
         const _p = Game.playerMap[id];
         _p.scale.setTo(0.25, 0.25);
@@ -74,13 +74,13 @@ export const Game = {
         _p.body.collideWorldBounds = true;
         if (!_p.nameTag) {
             // we create name Tag only if it does not exist yet;
-            _p.nameTag = game.add.text(0, 0, (id).slice(0, 10), {
+            _p.nameTag = game.add.text(0, 0, name, {
                 font: "14px Arial",
                 fill: "#fff",
                 align: "center"
             });
             _p.nameTag.anchor.setTo(0.5, 0.5);
-            console.log("added name tag " + id.slice(0, 10))
+            console.log("added name tag " + name)
         }
     },
 
