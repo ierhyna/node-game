@@ -1,11 +1,16 @@
 const express = require("express");
 const app = express();
+const bodyParser = require('body-parser');
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 const mongoose = require("mongoose");
 const MONGODB_URI = process.env.MONGODB_URI || require("./db.local");
 const PORT = process.env.PORT || 3000;
 
+const session = require('./config/session');
+const cookieParser = require('cookie-parser');
+
+const isLogged = require("./middleware/auth");
 const routeRegister = require("./routes/register");
 const routeLogin = require("./routes/login");
 const routeLogout = require("./routes/logout");
@@ -19,11 +24,14 @@ mongoose.connection.once('open', () => {
     console.info('Got DB connection');
 });
 
+app.use(cookieParser());
+app.use(session());
+app.use(bodyParser.urlencoded({extended: false}));
 app.use("/css", express.static(__dirname + "/css"));
 app.use("/dist", express.static(__dirname + "/dist"));
 app.use("/assets", express.static(__dirname + "/assets"));
 
-app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"));
+app.get("/", isLogged, (req, res) => res.sendFile(__dirname + "/index.html"));
 
 app.use("/register", routeRegister);
 app.use("/login", routeLogin);
