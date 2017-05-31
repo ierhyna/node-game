@@ -2,7 +2,16 @@ const express = require("express");
 const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
+const mongoose = require("mongoose");
+const MONGODB_URI = require("./db.local");
 const PORT = process.env.PORT || 3000;
+
+mongoose.Promise = global.Promise;
+mongoose.connect(MONGODB_URI);
+mongoose.connection.on('error', console.error.bind(console, 'DB connection error:'));
+mongoose.connection.once('open', () => {
+    console.info('Got DB connection');
+});
 
 app.use("/css", express.static(__dirname + "/css"));
 app.use("/dist", express.static(__dirname + "/dist"));
