@@ -7,10 +7,20 @@
   <body>
     <div>
       <form action="/login" method="post">
-        <input type="text" name="username" value="" placeholder="username">
-        <input type="password" name="password" value="" placeholder="password">
+        <label for="username">
+          Username:
+          <input type="text" id="username" name="username" value="" placeholder="username">
+        </label>
+        <br>
+        <label for="password">
+          Password:
+          <input type="password" id="password" name="password" value="" placeholder="password">
+        </label>
+        <br>
         <button type="submit" name="submit">submit</button>
       </form>
+      <br>
+      <a href="/register">Register</a>
     </div>
   </body>
 </html>
