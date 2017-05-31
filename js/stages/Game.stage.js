@@ -2,6 +2,7 @@ import game from "../game";
 import Client from "../client";
 
 let cursors;
+let throttle = 0;
 let nameTag;
 let velocity = {
     x: 0,
@@ -32,7 +33,7 @@ export const Game = {
     },
 
     update: function () {
-        if (!Game.playerMap[Client.socket.id]) return;       
+        if (!Game.playerMap[Client.socket.id]) return;
         velocity.x = 0;
         velocity.y = 0;
 
@@ -53,12 +54,17 @@ export const Game = {
             Game.playerMap[Client.socket.id].body.velocity.y = velocity.y;
         }
 
-        Client.updatePositions({
-            id: Client.socket.id,
-            x: Game.playerMap[Client.socket.id].body.position.x,
-            y: Game.playerMap[Client.socket.id].body.position.y
-        })
+        throttle++;
+        if (throttle === 3) {
+            Client.updatePositions({
+                id: Client.socket.id,
+                x: Game.playerMap[Client.socket.id].body.position.x,
+                y: Game.playerMap[Client.socket.id].body.position.y
+            })
+            throttle = 0;
+        }
     },
+
     renderNewPlayer: function (id, x, y) {
         Game.playerMap[id] = game.add.sprite(x, y, "sprite");
         const _p = Game.playerMap[id];
@@ -74,7 +80,7 @@ export const Game = {
                 align: "center"
             });
             _p.nameTag.anchor.setTo(0.5, 0.5);
-            console.log("added name tag " + id.slice(0,10))
+            console.log("added name tag " + id.slice(0, 10))
         }
     },
 
