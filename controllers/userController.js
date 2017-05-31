@@ -17,15 +17,15 @@ exports.register = (req, res) => {
 };
 
 exports.login = (req, res) => {
-  const sess = req.session;
+  // const sess = req.session;
 
   function auth(userRes) {
     userRes.comparePassword(req.body.password, (err, isMatch) => {
       if (err) {
         res.send(err);
       } else {
-        sess.auth = isMatch;
-        sess.username = userRes.username;
+        // sess.auth = isMatch;
+        // sess.username = userRes.username;
 
         res.redirect('/'); // redirect to homepage
       }
