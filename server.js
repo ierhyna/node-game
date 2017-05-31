@@ -30,9 +30,10 @@ app.use("/login", routeLogin);
 app.use("/logout", routeLogout);
 
 server.listen(PORT, () => console.log("Listening on " + server.address().port));
-
+const playerList = [];
 io.on("connection", socket => {
     socket.on("newPlayer", () => {
+        playerList.push(socket.id);
         socket.player = {
             id: socket.id,
             x: 128,
@@ -41,7 +42,10 @@ io.on("connection", socket => {
 
         socket.emit("playersRerender", getAllPlayers());
         socket.broadcast.emit("newPlayerConnected", socket.player);
-        socket.on("disconnect", () => io.emit("remove", socket.player.id));
+        socket.on("disconnect", () => {
+            playerList.splice(playerList.indexOf(socket.id), 1); // remove player from the list wiping all the relevant data
+            io.emit("remove", socket.player.id);
+        });
     });
 
     socket.on("updatePositions", data => {
@@ -50,7 +54,8 @@ io.on("connection", socket => {
         io.emit("renderMove", {
             id: data.id,
             x: data.x,
-            y: data.y
+            y: data.y,
+            playerList
         });
     });
 });
