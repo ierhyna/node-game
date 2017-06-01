@@ -3,7 +3,6 @@ import Client from "../client";
 
 let cursors;
 let throttle = 0;
-let nameTag;
 let velocity = {
     x: 0,
     y: 0
@@ -34,8 +33,6 @@ export const Game = {
 
     update: function () {
         if (!Game.playerMap[Client.socket.id]) return;
-        velocity.x = 0;
-        velocity.y = 0;
 
         if (cursors.up.isDown) {
             velocity.y = -150;
@@ -49,19 +46,20 @@ export const Game = {
         if (cursors.right.isDown) {
             velocity.x = 150;
         }
-        if (Game.playerMap[Client.socket.id]) {
-            Game.playerMap[Client.socket.id].body.velocity.x = velocity.x;
-            Game.playerMap[Client.socket.id].body.velocity.y = velocity.y;
-        }
-
         throttle++;
         if (throttle === 3) {
             Client.updatePositions({
                 id: Client.socket.id,
                 x: Game.playerMap[Client.socket.id].body.position.x,
-                y: Game.playerMap[Client.socket.id].body.position.y
+                y: Game.playerMap[Client.socket.id].body.position.y,
+                velocityX: velocity.x,
+                velocityY: velocity.y,
             })
             throttle = 0;
+        }
+        if (!(cursors.up.isDown || cursors.down.isDown || cursors.left.isDown || cursors.right.isDown)) {
+            velocity.x = 0;
+            velocity.y = 0;
         }
     },
 
@@ -91,8 +89,8 @@ export const Game = {
     },
 
     move: function (data) {
-        Game.playerMap[data.id].y = data.y;
-        Game.playerMap[data.id].x = data.x;
+        Game.playerMap[data.id].body.velocity.x = data.velocityX;
+        Game.playerMap[data.id].body.velocity.y = data.velocityY;
         data.playerList.forEach(id => {
             Game.playerMap[id].nameTag.x = Game.playerMap[id].x + Game.playerMap[id].width / 2;
             Game.playerMap[id].nameTag.y = Game.playerMap[id].y - 14;
