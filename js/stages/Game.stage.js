@@ -47,6 +47,11 @@ export const Game = {
             velocity.x = 150;
         }
         throttle++;
+
+        if (!(cursors.up.isDown || cursors.down.isDown || cursors.left.isDown || cursors.right.isDown)) {
+            velocity.x = 0;
+            velocity.y = 0;
+        }
         if (throttle === 3) {
             Client.updatePositions({
                 id: Client.socket.id,
@@ -56,10 +61,6 @@ export const Game = {
                 velocityY: velocity.y,
             })
             throttle = 0;
-        }
-        if (!(cursors.up.isDown || cursors.down.isDown || cursors.left.isDown || cursors.right.isDown)) {
-            velocity.x = 0;
-            velocity.y = 0;
         }
     },
 
