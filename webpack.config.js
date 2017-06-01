@@ -63,7 +63,7 @@ if (TARGET === 'build') {
     plugins: [
       new webpack.optimize.UglifyJsPlugin({
         drop_console: true,
-        sourceMap: false,
+        sourceMap: true,
         output: {
           comments: false
         }

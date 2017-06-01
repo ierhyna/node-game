@@ -27,60 +27,50 @@ mongoose.connection.once('open', () => {
 
 app.use(cookieParser());
 app.use(session());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/css", express.static(__dirname + "/css"));
 app.use("/dist", express.static(__dirname + "/dist"));
 app.use("/assets", express.static(__dirname + "/assets"));
 
 app.get("/", isLogged, (req, res) => {
     name = req.session.username;
-    res.sendFile(__dirname + "/index.html")});
+    res.sendFile(__dirname + "/index.html")
+});
 
 app.use("/register", routeRegister);
 app.use("/login", routeLogin);
 app.use("/logout", routeLogout);
 
 server.listen(PORT, () => console.log("Listening on " + server.address().port));
-const playerList = [];
+let players = [];
 io.on("connection", socket => {
-    socket.on("newPlayer", () => {
-        playerList.push(socket.id);
-        socket.player = {
-            id: socket.id,
-            x: 128,
-            y: 128,
-            name
-        };
+    const player = {
+        id: socket.id,
+        name,
+        x: 128,
+        y: 128
+    }
 
-        socket.emit("playersRerender", getAllPlayers());
-        socket.broadcast.emit("newPlayerConnected", socket.player);
+    players.push(player)
+    console.log(players)
+    socket.on("newPlayer", () => {
+        socket.emit("playersRerender", players);
+        socket.broadcast.emit("newPlayerConnected", player.id);
         socket.on("disconnect", () => {
-            console.log("removing player ", socket.id);
-            playerList.splice(playerList.indexOf(socket.id), 1); // remove player from the list wiping all the relevant data
-            io.emit("remove", socket.player.id);
+            io.emit("remove", player.id)
         });
     });
 
     socket.on("updatePositions", data => {
-        socket.player.x = data.x;
-        socket.player.y = data.y;
+        player.x = data.x;
+        player.y = data.y;
         io.emit("renderMove", {
             id: data.id,
             x: data.x,
             y: data.y,
             velocityX: data.velocityX,
             velocityY: data.velocityY,
-            playerList
+            players
         });
     });
 });
-
-function getAllPlayers() {
-    const players = [];
-    Object.keys(io.sockets.connected).forEach(socketID => {
-        const player = io.sockets.connected[socketID].player;
-        player && players.push(player);
-
-    });
-    return players;
-}

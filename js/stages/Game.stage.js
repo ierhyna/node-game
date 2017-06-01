@@ -1,6 +1,7 @@
 import game from "../game";
 import Client from "../client";
 
+let name, id;
 let cursors;
 let throttle = 0;
 let velocity = {
@@ -32,7 +33,7 @@ export const Game = {
     },
 
     update: function () {
-        if (!Game.playerMap[Client.socket.id]) return;
+        if (!id) return;
 
         if (cursors.up.isDown) {
             velocity.y = -150;
@@ -54,9 +55,9 @@ export const Game = {
         }
         if (throttle === 3) {
             Client.updatePositions({
-                id: Client.socket.id,
-                x: Game.playerMap[Client.socket.id].body.position.x,
-                y: Game.playerMap[Client.socket.id].body.position.y,
+                id,
+                x: Game.playerMap[id].body.position.x,
+                y: Game.playerMap[id].body.position.y,
                 velocityX: velocity.x,
                 velocityY: velocity.y,
             })
@@ -64,23 +65,25 @@ export const Game = {
         }
     },
 
-    renderNewPlayer: function (id, x, y, name) {
+    renderNewPlayer: function (playerId, x, y, name) {        
+        id = playerId;
         Game.playerMap[id] = game.add.sprite(x, y, "sprite");
         const _p = Game.playerMap[id];
         _p.scale.setTo(0.25, 0.25);
         game.physics.arcade.enable(_p);
         _p.body.enable = true;
+        _p.name = name;        
         _p.body.collideWorldBounds = true;
-        if (!_p.nameTag) {
-            // we create name Tag only if it does not exist yet;
-            _p.nameTag = game.add.text(0, 0, name, {
-                font: "14px Arial",
-                fill: "#fff",
-                align: "center"
-            });
-            _p.nameTag.anchor.setTo(0.5, 0.5);
-            console.log("added name tag " + name)
-        }
+        // if (!_p.nameTag) {
+        //     // we create name Tag only if it does not exist yet;
+        //     _p.nameTag = game.add.text(0, 0, name, {
+        //         font: "14px Arial",
+        //         fill: "#fff",
+        //         align: "center"
+        //     });
+        //     _p.nameTag.anchor.setTo(0.5, 0.5);
+        //     console.log("added name tag " + name)
+        // }
     },
 
     removePlayer: function (id) {
@@ -92,10 +95,12 @@ export const Game = {
     move: function (data) {
         Game.playerMap[data.id].body.velocity.x = data.velocityX;
         Game.playerMap[data.id].body.velocity.y = data.velocityY;
-        data.playerList.forEach(id => {
-            Game.playerMap[id].nameTag.x = Game.playerMap[id].x + Game.playerMap[id].width / 2;
-            Game.playerMap[id].nameTag.y = Game.playerMap[id].y - 14;
-        })
+        // data.players.forEach(id => {
+        //     if(id.name !== "undefined") {
+        //     Game.playerMap[id.name].nameTag.x = Game.playerMap[id].x + Game.playerMap[id].width / 2;
+        //     Game.playerMap[id.name].nameTag.y = Game.playerMap[id].y - 14;
+        //     }
+        // })
 
     }
 };
