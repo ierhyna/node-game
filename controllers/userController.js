@@ -11,8 +11,8 @@ exports.register = (req, res) => {
     if (err) {
       res.send(err);
     }
-
-    res.send(newUser);
+    console.log(newUser);
+    res.redirect('/'); // redirect to homepage
   });
 };
 

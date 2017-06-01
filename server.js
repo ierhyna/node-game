@@ -69,6 +69,8 @@ io.on("connection", socket => {
             y: data.y,
             playerList
         });
+        console.log('x: ' + socket.player.x, data.x);
+        console.log('y: ' + socket.player.y, data.y);
     });
 });
 
