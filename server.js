@@ -55,6 +55,7 @@ io.on("connection", socket => {
         socket.emit("playersRerender", getAllPlayers());
         socket.broadcast.emit("newPlayerConnected", socket.player);
         socket.on("disconnect", () => {
+            console.log("removing player ", socket.id);
             playerList.splice(playerList.indexOf(socket.id), 1); // remove player from the list wiping all the relevant data
             io.emit("remove", socket.player.id);
         });
@@ -69,7 +70,7 @@ io.on("connection", socket => {
             y: data.y,
             velocityX: data.velocityX,
             velocityY: data.velocityY,
-            playerList
+            playerList: Object.keys(io.sockets.connected)
         });
         console.log('x: ' + socket.player.x, data.x);
         console.log('y: ' + socket.player.y, data.y);
