@@ -67,6 +67,8 @@ io.on("connection", socket => {
             id: data.id,
             x: data.x,
             y: data.y,
+            velocityX: data.velocityX,
+            velocityY: data.velocityY,
             playerList
         });
     });
@@ -77,6 +79,7 @@ function getAllPlayers() {
     Object.keys(io.sockets.connected).forEach(socketID => {
         const player = io.sockets.connected[socketID].player;
         player && players.push(player);
+
     });
     return players;
 }
