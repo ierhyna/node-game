@@ -70,7 +70,7 @@ io.on("connection", socket => {
             y: data.y,
             velocityX: data.velocityX,
             velocityY: data.velocityY,
-            playerList: Object.keys(io.sockets.connected)
+            playerList
         });
         console.log('x: ' + socket.player.x, data.x);
         console.log('y: ' + socket.player.y, data.y);
