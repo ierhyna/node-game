@@ -68,6 +68,7 @@ io.on("connection", socket => {
         if(!p) return
         p.player.x = data.x;
         p.player.y = data.y;
+        createPlayerList();        
         io.emit("renderMove", {
             id: data.id,
             velocityX: data.velocityX,
