@@ -72,7 +72,7 @@ if (TARGET === 'build') {
   });
 } else {
   module.exports = merge(common, {
-    devtool: 'cheap-source-map',
+    devtool: 'eval-source-map',
     watch: true,
     output: {
       pathinfo: true,
