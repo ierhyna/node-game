@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require('fs');
 const app = express();
 const bodyParser = require('body-parser');
 const server = require("http").Server(app);
@@ -16,8 +17,8 @@ const routeLogin = require("./routes/login");
 const routeLogout = require("./routes/logout");
 
 const Users = require('./models/userModel');
-let name;
-
+let name = "undef";
+const stream = fs.createWriteStream("server.log");
 mongoose.Promise = global.Promise;
 mongoose.connect(MONGODB_URI);
 mongoose.connection.on('error', console.error.bind(console, 'DB connection error:'));
@@ -27,7 +28,9 @@ mongoose.connection.once('open', () => {
 
 app.use(cookieParser());
 app.use(session());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 app.use("/css", express.static(__dirname + "/css"));
 app.use("/dist", express.static(__dirname + "/dist"));
 app.use("/assets", express.static(__dirname + "/assets"));
@@ -43,36 +46,54 @@ app.use("/logout", routeLogout);
 
 server.listen(PORT, () => console.log("Listening on " + server.address().port));
 let players = [];
-io.on("connection", socket => {
-    const player = {
-        id: socket.id,
-        name,
-        x: 128,
-        y: 128
-    }
+let p;
 
-    players.push(player)
-    console.log(players)
+io.on("connection", socket => {
     socket.on("newPlayer", () => {
+        p = createPlayer(socket, name, 128, 128);        
+        createPlayerList();
+        console.log("Current players list: ", players);
         socket.emit("playersRerender", players);
-        socket.broadcast.emit("newPlayerConnected", player.id);
+        socket.broadcast.emit("newPlayerConnected", p.player);
         socket.on("disconnect", () => {
-            io.emit("remove", player.id)
+            console.log(players)
+            players.splice(players.indexOf(players.find(e=>e.id === socket.id)), 1);
+            console.log(players)
+            io.emit("remove", p.id)
+            console.log("player " + socket.id + " has gone offline");
         });
     });
 
     socket.on("updatePositions", data => {
-        player.x = data.x;
-        player.y = data.y;
+        if(!p) return
+        p.player.x = data.x;
+        p.player.y = data.y;
         io.emit("renderMove", {
             id: data.id,
-            x: data.x,
-            y: data.y,
             velocityX: data.velocityX,
             velocityY: data.velocityY,
             players
         });
-        console.log('x: ' + socket.player.x, data.x);
-        console.log('y: ' + socket.player.y, data.y);
     });
 });
+
+function createPlayer(socket, name, x, y) {
+    socket.player = {}
+    socket.player.name = name;
+    socket.player.x = x;
+    socket.player.y = y;
+    console.log(`New player ${name} has joined the game with an id: ${socket.id}`);
+    return socket;
+}
+
+function createPlayerList() {
+    players = [];
+    Object.keys(io.sockets.connected).forEach(id => {
+        io.sockets.connected[id].player && players.push({
+            name: io.sockets.connected[id].player.name,
+            x: io.sockets.connected[id].player.x,
+            y: io.sockets.connected[id].player.y,
+            id
+        })
+    })
+}

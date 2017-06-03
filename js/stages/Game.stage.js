@@ -32,7 +32,7 @@ export const Game = {
         cursors = game.input.keyboard.createCursorKeys();
     },
 
-    update: function () {
+    update: function () {        
         if (!id) return;
 
         if (cursors.up.isDown) {
@@ -65,14 +65,14 @@ export const Game = {
         }
     },
 
-    renderNewPlayer: function (playerId, x, y, name) {        
-        id = playerId;
-        Game.playerMap[id] = game.add.sprite(x, y, "sprite");
+    renderNewPlayer: function (player) {        
+        id = player.id;
+        Game.playerMap[id] = game.add.sprite(player.x, player.y, "sprite");
         const _p = Game.playerMap[id];
         _p.scale.setTo(0.25, 0.25);
         game.physics.arcade.enable(_p);
         _p.body.enable = true;
-        _p.name = name;        
+        _p.name = player.name;        
         _p.body.collideWorldBounds = true;
         // if (!_p.nameTag) {
         //     // we create name Tag only if it does not exist yet;
