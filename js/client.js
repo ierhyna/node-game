@@ -7,7 +7,7 @@ Client.socket = io.connect("/");
 
 Client.addPlayer = () => Client.socket.emit("newPlayer");
 
-Client.socket.on("newPlayerConnected", player => Game.renderNewPlayer(player));
+Client.socket.on("newPlayerConnected", player => Game.renderNewPlayer(player, self));
 Client.socket.on("playersRerender", players => {
     players.forEach(player => {
         Game.renderNewPlayer(player);
