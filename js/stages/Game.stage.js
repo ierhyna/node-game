@@ -53,7 +53,8 @@ export const Game = {
             velocity.x = 0;
             velocity.y = 0;
         }
-        if (throttle === 3) {
+        if (throttle === 3 && Game.playerMap[Client.socket.id]) {
+            try{
             Client.updatePositions({
                 id: Client.socket.id,
                 x: Game.playerMap[Client.socket.id].body.position.x,
@@ -61,12 +62,16 @@ export const Game = {
                 velocityX: velocity.x,
                 velocityY: velocity.y,
             })
+        }
+        catch(e){
+            console.log("error with " + Client.socket.id)
+        }
             throttle = 0;
         }
     },
 
     renderNewPlayer: function (player) {
-        console.log("Creating new player: "+ player.id)           
+        console.log("Creating new player: "+ player.id)        
         Game.playerMap[player.id] = game.add.sprite(player.x, player.y, "sprite");
         const _p = Game.playerMap[player.id];
         _p.scale.setTo(0.25, 0.25);
