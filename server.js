@@ -44,6 +44,7 @@ app.use("/register", routeRegister);
 app.use("/login", routeLogin);
 app.use("/logout", routeLogout);
 
+const playerList = new Map();
 server.listen(PORT, () => console.log("Listening on " + server.address().port));
 let players = [];
 let p;
