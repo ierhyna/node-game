@@ -83,6 +83,7 @@ function createPlayer(socket, name, x, y) {
     socket.player.name = name;
     socket.player.x = x;
     socket.player.y = y;
+    socket.player.id = socket.id;
     console.log(`New player ${name} has joined the game with an id: ${socket.id}`);
     return socket;
 }
