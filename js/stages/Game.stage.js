@@ -65,8 +65,9 @@ export const Game = {
         }
     },
 
-    renderNewPlayer: function (player) {        
-        id = player.id;
+    renderNewPlayer: function (player, self) {
+        console.log(" I am "+ Client.socket.id)   
+        id = Client.socket.id;
         Game.playerMap[id] = game.add.sprite(player.x, player.y, "sprite");
         const _p = Game.playerMap[id];
         _p.scale.setTo(0.25, 0.25);
@@ -74,6 +75,7 @@ export const Game = {
         _p.body.enable = true;
         _p.name = player.name;        
         _p.body.collideWorldBounds = true;
+        console.log("adding player ", player.id)
         // if (!_p.nameTag) {
         //     // we create name Tag only if it does not exist yet;
         //     _p.nameTag = game.add.text(0, 0, name, {
@@ -87,12 +89,14 @@ export const Game = {
     },
 
     removePlayer: function (id) {
-        Game.playerMap[id].nameTag.destroy(); // nameTag should be destroyed on its own
+       // Game.playerMap[id].nameTag.destroy(); // nameTag should be destroyed on its own
         Game.playerMap[id].destroy();
         delete Game.playerMap[id];
     },
 
     move: function (data) {
+        console.log("trying to move " +data.id)
+        if(!Game.playerMap[data.id]) return;
         Game.playerMap[data.id].body.velocity.x = data.velocityX;
         Game.playerMap[data.id].body.velocity.y = data.velocityY;
         // data.players.forEach(id => {
