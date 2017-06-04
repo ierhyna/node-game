@@ -1,5 +1,4 @@
 const express = require("express");
-const fs = require('fs');
 const app = express();
 const bodyParser = require('body-parser');
 const server = require("http").Server(app);
@@ -17,8 +16,6 @@ const routeLogin = require("./routes/login");
 const routeLogout = require("./routes/logout");
 
 const Users = require('./models/userModel');
-let name = "undef";
-const stream = fs.createWriteStream("server.log");
 mongoose.Promise = global.Promise;
 mongoose.connect(MONGODB_URI);
 mongoose.connection.on('error', console.error.bind(console, 'DB connection error:'));
@@ -44,59 +41,47 @@ app.use("/register", routeRegister);
 app.use("/login", routeLogin);
 app.use("/logout", routeLogout);
 
-const playerList = new Map();
 server.listen(PORT, () => console.log("Listening on " + server.address().port));
-let players = [];
-let p;
+
+let playerMap = {};
 
 io.on("connection", socket => {
     socket.on("newPlayer", () => {
-        p = createPlayer(socket, name, 128, 128);        
+        const player = {
+            id: socket.id,
+            name: name,
+            x: 128,
+            y: 128
+        }
+        socket.player = player;
         createPlayerList();
-        console.log("Current players list: ", players);
-        socket.emit("playersRerender", players);
-        socket.broadcast.emit("newPlayerConnected", p.player);
+        console.log("Current players list: ", playerMap);
+        socket.emit("playersRerender", playerMap);
+        socket.broadcast.emit("newPlayerConnected", player);
         socket.on("disconnect", () => {
-            console.log(players)
-            players.splice(players.indexOf(players.find(e=>e.id === socket.id)), 1);
-            console.log(players)
-            io.emit("remove", p.id)
-            console.log("player " + socket.id + " has gone offline");
+            delete playerMap[socket.id];
+            io.emit("remove", player.id)
+            console.log("player " + player.id + " has gone offline");
         });
     });
 
     socket.on("updatePositions", data => {
-        if(!p) return
-        p.player.x = data.x;
-        p.player.y = data.y;
-        createPlayerList();        
+        if (!socket.player) return
+        socket.player.x = data.x;
+        socket.player.y = data.y;
+        playerMap = Object.assign(playerMap, {
+            [socket.id]: socket.player
+        });
         io.emit("renderMove", {
             id: data.id,
             velocityX: data.velocityX,
-            velocityY: data.velocityY,
-            players
+            velocityY: data.velocityY
         });
     });
 });
 
-function createPlayer(socket, name, x, y) {
-    socket.player = {}
-    socket.player.name = name;
-    socket.player.x = x;
-    socket.player.y = y;
-    socket.player.id = socket.id;
-    console.log(`New player ${name} has joined the game with an id: ${socket.id}`);
-    return socket;
-}
-
 function createPlayerList() {
-    players = [];
     Object.keys(io.sockets.connected).forEach(id => {
-        io.sockets.connected[id].player && players.push({
-            name: io.sockets.connected[id].player.name,
-            x: io.sockets.connected[id].player.x,
-            y: io.sockets.connected[id].player.y,
-            id
-        })
-    })
+        if (io.sockets.connected[id].player) playerMap[id] = io.sockets.connected[id].player;
+    });
 }

@@ -32,7 +32,7 @@ export const Game = {
         cursors = game.input.keyboard.createCursorKeys();
     },
 
-    update: function () {        
+    update: function () {
         if (!Client.socket.id) return;
 
         if (cursors.up.isDown) {
@@ -54,60 +54,60 @@ export const Game = {
             velocity.y = 0;
         }
         if (throttle === 3 && Game.playerMap[Client.socket.id]) {
-            try{
-            Client.updatePositions({
-                id: Client.socket.id,
-                x: Game.playerMap[Client.socket.id].body.position.x,
-                y: Game.playerMap[Client.socket.id].body.position.y,
-                velocityX: velocity.x,
-                velocityY: velocity.y,
-            })
-        }
-        catch(e){
-            console.log("error with " + Client.socket.id)
-        }
+            try {
+                Client.updatePositions({
+                    id: Client.socket.id,
+                    x: Game.playerMap[Client.socket.id].body.position.x,
+                    y: Game.playerMap[Client.socket.id].body.position.y,
+                    velocityX: velocity.x,
+                    velocityY: velocity.y,
+                })
+            } catch (e) {
+                console.log("error with " + Client.socket.id)
+            }
             throttle = 0;
         }
     },
 
     renderNewPlayer: function (player) {
-        console.log("Creating new player: "+ player.id)        
+        console.log("Creating new player: " + player.id)
         Game.playerMap[player.id] = game.add.sprite(player.x, player.y, "sprite");
         const _p = Game.playerMap[player.id];
         _p.scale.setTo(0.25, 0.25);
         game.physics.arcade.enable(_p);
         _p.body.enable = true;
-        _p.name = player.name;        
-        _p.body.collideWorldBounds = true;        
-        // if (!_p.nameTag) {
-        //     // we create name Tag only if it does not exist yet;
-        //     _p.nameTag = game.add.text(0, 0, name, {
-        //         font: "14px Arial",
-        //         fill: "#fff",
-        //         align: "center"
-        //     });
-        //     _p.nameTag.anchor.setTo(0.5, 0.5);
-        //     console.log("added name tag " + name)
-        // }
+        _p.name = player.name;
+        _p.body.collideWorldBounds = true;
+        if (!_p.nameTag) {
+            // we create name Tag only if it does not exist yet;
+            _p.nameTag = game.add.text(0, 0, player.name, {
+                font: "14px Arial",
+                fill: "#fff",
+                align: "center"
+            });
+            _p.nameTag.anchor.setTo(0.5, 0.5);
+            console.log("added name tag " + player.name)
+        }
     },
-        
-    removePlayer: function (id) {
-       // Game.playerMap[id].nameTag.destroy(); // nameTag should be destroyed on its own
-       console.log("trying to remove" + id)
-       console.log("and we have ", Game.playerMap)
+
+    removePlayer: function (id) {        
+        console.log(`Removing ${id} from the game`);
+        Game.playerMap[id].nameTag.destroy(); // nameTag should be destroyed on its own
         Game.playerMap[id].destroy();
         delete Game.playerMap[id];
     },
 
-    move: function (data) {        
-        if(!Game.playerMap[data.id]) return;
-        console.log("trying to move " +data.id)
+    move: function (data) {
+        if (!(Game && Game.playerMap && Game.playerMap[data.id])) {
+            console.log(`Attempted to move ${data.id} but player is not ready yet. Rejecting`);
+            return
+        };        
         Game.playerMap[data.id].body.velocity.x = data.velocityX;
         Game.playerMap[data.id].body.velocity.y = data.velocityY;
         // data.players.forEach(id => {
         //     if(id.name !== "undefined") {
-        //     Game.playerMap[id.name].nameTag.x = Game.playerMap[id].x + Game.playerMap[id].width / 2;
-        //     Game.playerMap[id.name].nameTag.y = Game.playerMap[id].y - 14;
+        Game.playerMap[data.id].nameTag.x = Game.playerMap[id].x + Game.playerMap[id].width / 2;
+        Game.playerMap[data.id].nameTag.y = Game.playerMap[id].y - 14;
         //     }
         // })
 
