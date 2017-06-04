@@ -10,7 +10,7 @@ Client.addPlayer = () => Client.socket.emit("newPlayer");
 Client.socket.on("newPlayerConnected", player => Game.renderNewPlayer(player));
 Client.socket.on("playersRerender", players => {
     Object.keys(players).forEach(key => {
-        Game.renderNewPlayer(players[key]);        
+        Game.renderNewPlayer(players[key]);
     });
 });
 
