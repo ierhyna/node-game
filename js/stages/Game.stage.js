@@ -32,48 +32,51 @@ export const Game = {
         Game.bgLayer = Game.tileMap.createLayer("layer_0");
         Client.addPlayer();
         cursors = game.input.keyboard.createCursorKeys();
+        console.log('Create: ')
+        console.log(Game.playerMap)
     },
 
     update: function () {
-        if (!Client.socket.id) return;
+        if (Client.socket.id && Game.playerMap[Client.socket.id]) {
 
-        if (cursors.up.isDown) {
-            velocity.y = -150;
-        }
-        if (cursors.down.isDown) {
-            velocity.y = 150;
-        }
-        if (cursors.left.isDown) {
-            velocity.x = -150;
-        }
-        if (cursors.right.isDown) {
-            velocity.x = 150;
-        }
-        throttle++;
-
-        if (!(cursors.up.isDown || cursors.down.isDown || cursors.left.isDown || cursors.right.isDown)) {
-            velocity.x = 0;
-            velocity.y = 0;
-        }
-        if (throttle === 3 && Game.playerMap[Client.socket.id]) {
-            try {
-                if (velocity.oldx !== velocity.x || velocity.oldy !== velocity.y) {
-                    velocity.oldx = velocity.x;
-                    velocity.oldy = velocity.y;
-                    Client.updatePositions({
-                        id: Client.socket.id,
-                        x: Game.playerMap[Client.socket.id].body.position.x,
-                        y: Game.playerMap[Client.socket.id].body.position.y,
-                        velocityX: velocity.x,
-                        velocityY: velocity.y,
-                    })
-                }
-            } catch (e) {
-                console.log("error with " + Client.socket.id)
+            if (cursors.up.isDown) {
+                velocity.y = -150;
             }
-            throttle = 0;
+            if (cursors.down.isDown) {
+                velocity.y = 150;
+            }
+            if (cursors.left.isDown) {
+                velocity.x = -150;
+            }
+            if (cursors.right.isDown) {
+                velocity.x = 150;
+            }
+            throttle++;
+
+            if (!(cursors.up.isDown || cursors.down.isDown || cursors.left.isDown || cursors.right.isDown)) {
+                velocity.x = 0;
+                velocity.y = 0;
+            }
+            if (throttle === 3 && Game.playerMap[Client.socket.id]) {
+                try {
+                    if (velocity.oldx !== velocity.x || velocity.oldy !== velocity.y) {
+                        velocity.oldx = velocity.x;
+                        velocity.oldy = velocity.y;
+                        Client.updatePositions({
+                            id: Client.socket.id,
+                            x: Game.playerMap[Client.socket.id].body.position.x,
+                            y: Game.playerMap[Client.socket.id].body.position.y,
+                            velocityX: velocity.x,
+                            velocityY: velocity.y,
+                        })
+                    }
+                } catch (e) {
+                    console.log("error with " + Client.socket.id)
+                }
+                throttle = 0;
+            }
+            this.updateTags();
         }
-        this.updateTags();
     },
 
     renderNewPlayer: function (player) {
