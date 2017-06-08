@@ -57,6 +57,8 @@ export const Game = {
             }
             throttle++;
 
+            Game.physics.arcade.collide(Game.playerMap[Client.socket.id], Game.blockedLayer);
+
             if (!(cursors.up.isDown || cursors.down.isDown || cursors.left.isDown || cursors.right.isDown)) {
                 velocity.x = 0;
                 velocity.y = 0;
