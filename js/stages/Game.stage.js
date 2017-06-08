@@ -27,9 +27,13 @@ export const Game = {
     create: function () {
         game.stage.disableVisibilityChange = true;
         Game.playerMap = {};
+
         Game.tileMap = game.add.tilemap("room");
         Game.tileMap.addTilesetImage("tilea2", "tileset");
-        Game.bgLayer = Game.tileMap.createLayer("layer_0");
+        Game.bgLayer = Game.tileMap.createLayer("background");
+        Game.blockersLayer = Game.tileMap.createLayer("blockers");
+        Game.tileMap.setCollisionBetween(1, 100000, true, "blockers");
+
         Client.addPlayer();
         cursors = game.input.keyboard.createCursorKeys();
         console.log('Create: ')
